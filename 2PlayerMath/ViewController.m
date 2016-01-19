@@ -22,6 +22,7 @@
 @property (nonatomic, strong) GameModel *game;
 @property (nonatomic, strong) Player *player1;
 @property (nonatomic, strong) Player *player2;
+@property (strong, nonatomic) IBOutlet UILabel *correctionLabel;
 
 @end
 
@@ -85,6 +86,34 @@
     [self.answerArray addObject:@"0"];
 }
 
+// Answer is correct animation
+-(void)correctAnimation:(UILabel *)correctionLabel {
+    correctionLabel.text = @"Correct!";
+    correctionLabel.backgroundColor = [UIColor greenColor];
+    correctionLabel.alpha = 1.0;
+//        [UIView animateWithDuration:1.0 delay:0 options:UIViewAnimationOptionCurveEaseInOut
+//                         animations:^{ correctionLabel.alpha = 1;}
+//                         completion:nil];
+    [UIView animateWithDuration:2.0 delay:0 options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{ correctionLabel.alpha = 0;}
+                     completion:nil];
+//    correctionLabel.alpha = 0;
+}
+
+// Answer is incorrect animation
+-(void)incorrectAnimation:(UILabel *)correctionLabel {
+    correctionLabel.text = @"Incorrect";
+    correctionLabel.backgroundColor = [UIColor redColor];
+    correctionLabel.alpha = 1.0;
+//    [UIView animateWithDuration:1.0 delay:0 options:UIViewAnimationOptionCurveEaseInOut
+//                     animations:^{ correctionLabel.alpha = 1;}
+//                     completion:nil];
+    [UIView animateWithDuration:2.0 delay:0 options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{ correctionLabel.alpha = 0;}
+                     completion:nil];
+//    correctionLabel.alpha = 0;
+}
+
 - (IBAction)enter:(UIButton *)sender {
     NSString *preAnswer = [[NSString alloc]init];
     
@@ -103,10 +132,12 @@
         // Player1's turn
         if (self.userAnswer != self.game.answer) {
             NSLog(@"Sorry no good!");
+            [self incorrectAnimation:self.correctionLabel];
             [self.player1 newScore];
             self.player1Label.text = [NSString stringWithFormat:@"Player 1 Score: %d", self.player1.score];
         } else {
             NSLog(@"Congratz!");
+            [self correctAnimation:self.correctionLabel];
         }
         [self.answerArray removeAllObjects];
         self.game.x = [self.game randomNum];
@@ -122,9 +153,11 @@
         // Player2's turn
         if (self.userAnswer != self.game.answer) {
             NSLog(@"Sorry no good!");
+            [self incorrectAnimation:self.correctionLabel];
             [self.player2 newScore];
             } else {
                 NSLog(@"Congratz!");
+                [self correctAnimation:self.correctionLabel];
             }
         [self.answerArray removeAllObjects];
         self.game.x = [self.game randomNum];
